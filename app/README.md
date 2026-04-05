@@ -2,37 +2,37 @@
 This folder contains the data folder and all scripts and source code that are required to run your simple search engine. 
 
 ### data
-This folder stores the text documents required to index. Here you can find a sample of 100 documents from `a.parquet` file from the original source.
+This folder stores the parquet file and generated plain text documents. The current implementation expects `n.parquet` and prepares `n=100` documents into `data/generated_docs`.
 
 ### mapreduce
 This folder stores the mapper `mapperx.py` and reducer `reducerx.py` scripts for the MapReduce pipelines.
 
 ### app.py
-This is a Python file to write code to store index data in Cassandra.
+This Python file creates the Cassandra schema and loads index data from HDFS into Cassandra.
 
 ### app.sh
 The entrypoint for the executables in your repository and includes all commands that will run your programs in this folder.
 
 ### create_index.sh
-A script to create index data using MapReduce pipelines and store them in HDFS.
+A script to run two Hadoop Streaming pipelines and store their outputs in HDFS under `/indexer`.
 
 ### index.sh
-A script to run the MapReduce pipelines and the programs to store data in Cassandra/ScyllaDB.
+A script to run `create_index.sh` and then `store_index.sh`.
 
 ### prepare_data.py
-The script that will create documents from parquet file. You can run it in the driver.
+The PySpark script used both for generating `.txt` documents from parquet and for building `/input/data` in HDFS from `/data`.
 
 ### prepare_data.sh
 The script that will run the prevoious Python file and will copy the data to HDFS.
 
 ### query.py
-A Python file to write PySpark app that will process a user's query and retrieves a list of top 10 relevant documents ranked using BM25.
+A PySpark BM25 ranker that reads the index from Cassandra and retrieves the top 10 relevant documents.
 
 ### requirements.txt
 This file contains all Python depenedencies that are needed for running the programs in this repository. This file is read by pip when installing the dependencies in `app.sh` script.
 
 ### search.sh
-This script will be responsible for running the `query.py` PySpark app on Hadoop YARN cluster.
+This script runs the BM25 query job on the YARN cluster with the packaged Python environment.
 
 
 ### start-services.sh
@@ -40,4 +40,4 @@ This script will initiate the services required to run Hadoop components. This s
 
 
 ### store_index.sh
-This script will create Cassandra/ScyllaDB tables and load the index data from HDFS to them.
+This script creates Cassandra tables and loads the index data from HDFS to them.

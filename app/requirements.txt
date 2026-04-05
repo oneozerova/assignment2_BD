@@ -4,4 +4,3 @@ pyarrow
 fastparquet
 pathvalidate
 pyspark
-tqdm

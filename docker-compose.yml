@@ -42,10 +42,14 @@ services:
   cassandra-server:
     image: cassandra
     container_name: cassandra-server
+    hostname: cassandra-server
     ports:
       - "7000:7000"
     networks:
-      - spark-cluster
+      spark-cluster:
+        aliases:
+          - cassandra-server
+          - cassandra
     
 
 networks:
